@@ -49,12 +49,12 @@ export default class Foydalanuvchilar extends Component {
                 age: this.nameRef.current.value,
                 email: this.emailRef.current.value,
             },
-            usersArr = [];
+            usersArr = this.state.userlist;
     
-            this.state.userlist.map((user) => {
-                usersArr.push(user)
-                return true
-            })
+            // this.state.userlist.map((user) => {
+            //     usersArr.push(user)
+            //     return true
+            // })
             usersArr.push(user)
             this.setState({
                 userlist: usersArr
