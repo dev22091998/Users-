@@ -18,15 +18,17 @@ export default class Foydalanuvchilar extends Component {
                     {name:"Bob", email:"bob32@gmail.com", age:41}   
             
             ],
+            isEdit: false,
+            editUser: null,
         }
         this.nameRef = createRef();
         this.ageRef = createRef();
         this.emailRef = createRef();
     }
 
-    del(id){
+    Del(index){
         let arr = this.state.userlist;
-        delete(arr[id])
+        delete(arr[index])
         // this.state.userlist.map((user, index) => {
         //     if(id === index){
         //         console.log()
@@ -41,29 +43,59 @@ export default class Foydalanuvchilar extends Component {
     }
 
     Add(){
-        if(this.nameRef.current.value === '' || this.ageRef.current.value === null || this.emailRef.current.value === ''){
-            alert('Please fill in inputs')
-        } else {
-            let user = {
-                name: this.nameRef.current.value,
-                age: this.nameRef.current.value,
-                email: this.emailRef.current.value,
-            },
-            usersArr = this.state.userlist;
+        if(!this.state.isEdit){
+            if(this.nameRef.current.value === '' || this.ageRef.current.value === null || this.emailRef.current.value === ''){
+                alert('Please fill in inputs')
+            } else {
+                let user = {
+                    name: this.nameRef.current.value,
+                    age: this.nameRef.current.value,
+                    email: this.emailRef.current.value,
+                },
+                usersArr = this.state.userlist;
+        
+                // this.state.userlist.map((user) => {
+                //     usersArr.push(user)
+                //     return true
+                // })
+                usersArr.push(user)
+                this.setState({
+                    userlist: usersArr.reverse()
+                });
     
-            // this.state.userlist.map((user) => {
-            //     usersArr.push(user)
-            //     return true
-            // })
-            usersArr.push(user)
-            this.setState({
-                userlist: usersArr
-            });
+            }
+            this.nameRef.current.value = ''
+            this.ageRef.current.value = null
+            this.emailRef.current.value = ''
+        } else {
+            let editArr = [];
+            this.state.userlist.map((user) => {
+                editArr.push(user)
+                return true
+            })
+             editArr[this.state.editUser].name = this.nameRef.current.value;
+             editArr[this.state.editUser].age = this.ageRef.current.value;
+             editArr[this.state.editUser].email = this.emailRef.current.value;
 
+             this.setState({
+                 userlist: editArr,
+                 isEdit: false
+             })
+             this.nameRef.current.value = ''
+            this.ageRef.current.value = null
+            this.emailRef.current.value = ''
+            
         }
-        this.nameRef.current.value = ''
-        this.ageRef.current.value = null
-        this.emailRef.current.value = ''
+    }
+
+    Edit(obj, id){
+        this.setState({
+            isEdit: true,
+            editUser: id
+        })
+        this.nameRef.current.value = obj.name;
+        this.ageRef.current.value = obj.age;
+        this.emailRef.current.value = obj.email;
     }
     render() {
         return (
@@ -82,7 +114,12 @@ export default class Foydalanuvchilar extends Component {
                             <input type='text' ref={this.emailRef} className="p-2 fs-6 w-100" placeholder="Enter Email" id="email"  />
                         </Col>
                         <Col md="1" className="pt-2">
-                            <Button onClick={()=>this.Add()} className="btn btn-info mt-4 ms-0">Add</Button>
+                            {
+                                this.state.isEdit ?
+                                    <Button onClick={()=>this.Add()} className="btn btn-info mt-4 ms-0">Edit</Button>
+                                :
+                                    <Button onClick={()=>this.Add()} className="btn btn-info mt-4 ms-0">Add</Button>
+                            }
                         </Col>
                     </Row>
                     <Row>
@@ -107,7 +144,10 @@ export default class Foydalanuvchilar extends Component {
                                                 <td>{ sirojiddin.name }</td>
                                                 <td>{ sirojiddin.age }</td>
                                                 <td>{ sirojiddin.email }</td>
-                                                <td><button className="btn btn-danger" onClick={()=> this.del(index)} >Delete</button></td>
+                                                <td>
+                                                    <button className="btn btn-primary me-1" onClick={()=> this.Edit(sirojiddin, index)} >Edit</button>
+                                                    <button className="btn btn-danger" onClick={()=> this.Del(index)} >Delete</button>
+                                                </td>
                                             </tr>
                                         )
                                         })
